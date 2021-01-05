@@ -7,6 +7,6 @@ const fetchData = async () => {
 test('Fetch testing.', () => {
     return fetchData()
     .then(res => {
-        expect(res.data.message).toBe('Hello World!');
+        expect(res.data.message).toBe('Hello World!!');
     });
 });
