@@ -1,0 +1,32 @@
+name: Twilio CI Auto
+
+on:
+  repository_dispatch:
+    types: [setup]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Install dependencies for the twilio function
+        run: npm ci
+      - name: Install twilio cli and run deploy command
+        env:
+          TWILIO_ACCOUNT_SID: ${{ github.event.client_payload.TWILIO_ACCOUNT_SID }}
+          TWILIO_API_KEY: ${{ github.event.client_payload.TWILIO_API_KEY }}
+          TWILIO_API_SECRET: ${{ github.event.client_payload.TWILIO_API_SECRET }}
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-serverless
+      - name: Run hello.sh
+        run: ./hello.sh
+      - name: Deploy the serverless
+        env:
+          TWILIO_ACCOUNT_SID: ${{ github.event.client_payload.TWILIO_ACCOUNT_SID }}
+          TWILIO_API_KEY: ${{ github.event.client_payload.TWILIO_API_KEY }}
+          TWILIO_API_SECRET: ${{ github.event.client_payload.TWILIO_API_SECRET }}
+        run: twilio serverless:deploy --service-name=example-deployed-with-github-actions2 --production --force
