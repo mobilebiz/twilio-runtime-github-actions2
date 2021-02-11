@@ -23,7 +23,7 @@ jobs:
           TWILIO_API_SECRET: ${{ github.event.client_payload.TWILIO_API_SECRET }}
         run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-serverless
       - name: Run hello.sh
-        run: ls -ls
+        run: sh hello.sh
       - name: Deploy the serverless
         env:
           TWILIO_ACCOUNT_SID: ${{ github.event.client_payload.TWILIO_ACCOUNT_SID }}
